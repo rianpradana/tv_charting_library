@@ -156,8 +156,11 @@ export class HistoryProvider {
 					}
 					result.bars.push(...followupResult.bars);
 				} else {
-					if (followupResult.bars[followupResult.bars.length - 1].time === result.bars[0].time) {
-						followupResult.bars.pop();
+					const lastFollowupBar = followupResult.bars[followupResult.bars.length - 1];
+					const firstResultBar = result.bars[0];
+					
+					if (lastFollowupBar && firstResultBar && lastFollowupBar.time === firstResultBar.time) {
+					    followupResult.bars.pop();
 					}
 					result.bars.unshift(...followupResult.bars);
 				}
