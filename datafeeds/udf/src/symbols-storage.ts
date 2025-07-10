@@ -289,8 +289,10 @@ export class SymbolsStorage {
 					this._symbolsInfo[symbolKey(symbolNameSafe, currencyCode, unitId)] = symbolInfo;
 					this._symbolsInfo[symbolKey(fullNameSafe, currencyCode, unitId)] = symbolInfo;
 				}
-
-				this._symbolsList.push(symbolName);
+				if (symbolNameSafe !== undefined) {
+					this._symbolsList.push(symbolNameSafe);
+				}
+				// this._symbolsList.push(symbolName);
 			}
 		} catch (error) {
 			throw new Error(`SymbolsStorage: API error when processing exchange ${exchange} symbol #${symbolIndex} (${data.symbol[symbolIndex]}): ${Object(error).message}`);
