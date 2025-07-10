@@ -128,9 +128,13 @@ export class HistoryProvider {
 				}
 
 				if (this._limitedServerResponse.expectedOrder === 'earliestFirst') {
-					requestParams.from = Math.round(result.bars[result.bars.length - 1].time / 1000);
+					if (result.bars.length > 0) {
+					    requestParams.from = Math.round(result.bars[result.bars.length - 1].time / 1000);
+					}
 				} else {
-					requestParams.to = Math.round(result.bars[0].time / 1000);
+					if (result.bars.length > 0) {
+					    requestParams.to = Math.round(result.bars[0].time / 1000);
+					}
 				}
 
 				const followupResponse = await this._requester.sendRequest<HistoryResponse>(
