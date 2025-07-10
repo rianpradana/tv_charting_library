@@ -75,16 +75,18 @@ export class HistoryProvider {
 		const requestParams: RequestParams = {
 			symbol: symbolInfo.ticker || '',
 			resolution: resolution,
-			from: periodParams.from,
-			to: periodParams.to,
+			from: periodParams.from ?? 0,
+			to: periodParams.to ?? Math.floor(Date.now() / 1000),
 		};
 
 		if (periodParams.countBack !== undefined) {
 			requestParams.countback = periodParams.countBack;
 		}
+
 		if (symbolInfo.currency_code !== undefined) {
 			requestParams.currencyCode = symbolInfo.currency_code;
 		}
+
 		if (symbolInfo.unit_id !== undefined) {
 			requestParams.unitId = symbolInfo.unit_id;
 		}
@@ -96,13 +98,15 @@ export class HistoryProvider {
 					'history',
 					requestParams
 				);
+
 				const result = this._processHistoryResponse(initialResponse);
 
 				if (this._limitedServerResponse) {
 					await this._processTruncatedResponse(result, requestParams);
 				}
+
 				resolve(result);
-			} catch (e: unknown) {
+			} catch (e) {
 				const reasonString = getErrorMessage(e);
 				console.warn(`HistoryProvider: getBars() failed, error=${reasonString}`);
 				reject(reasonString);
@@ -117,25 +121,16 @@ export class HistoryProvider {
 				this._limitedServerResponse &&
 				this._limitedServerResponse.maxResponseLength > 0 &&
 				this._limitedServerResponse.maxResponseLength === lastResultLength &&
-				requestParams.from !== undefined &&
-				requestParams.to !== undefined &&
-				requestParams.from < requestParams.to
+				(requestParams.from ?? 0) < (requestParams.to ?? 0)
 			) {
-				// adjust request parameters for follow-up request
-				if (requestParams.countback !== undefined) {
-					requestParams.countback = requestParams.countback - lastResultLength;
+				if (requestParams.countback) {
+					requestParams.countback = (requestParams.countback as number) - lastResultLength;
 				}
 
 				if (this._limitedServerResponse.expectedOrder === 'earliestFirst') {
-					const lastBar = result.bars[result.bars.length - 1];
-					if (lastBar?.time) {
-						requestParams.from = Math.round(lastBar.time / 1000);
-					}
+					requestParams.from = Math.round(result.bars[result.bars.length - 1].time / 1000);
 				} else {
-					const firstBar = result.bars[0];
-					if (firstBar?.time) {
-						requestParams.to = Math.round(firstBar.time / 1000);
-					}
+					requestParams.to = Math.round(result.bars[0].time / 1000);
 				}
 
 				const followupResponse = await this._requester.sendRequest<HistoryResponse>(
@@ -147,18 +142,18 @@ export class HistoryProvider {
 				lastResultLength = followupResult.bars.length;
 
 				if (this._limitedServerResponse.expectedOrder === 'earliestFirst') {
-					if (followupResult.bars[0]?.time === result.bars[result.bars.length - 1]?.time) {
+					if (followupResult.bars[0].time === result.bars[result.bars.length - 1].time) {
 						followupResult.bars.shift();
 					}
 					result.bars.push(...followupResult.bars);
 				} else {
-					if (followupResult.bars[followupResult.bars.length - 1]?.time === result.bars[0]?.time) {
+					if (followupResult.bars[followupResult.bars.length - 1].time === result.bars[0].time) {
 						followupResult.bars.pop();
 					}
 					result.bars.unshift(...followupResult.bars);
 				}
 			}
-		} catch (e: unknown) {
+		} catch (e) {
 			const reasonString = getErrorMessage(e);
 			console.warn(`HistoryProvider: getBars() warning during followup request, error=${reasonString}`);
 		}
@@ -202,6 +197,9 @@ export class HistoryProvider {
 			}
 		}
 
-		return { bars, meta };
+		return {
+			bars: bars,
+			meta: meta,
+		};
 	}
 }
