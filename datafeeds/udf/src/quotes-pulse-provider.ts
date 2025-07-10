@@ -90,7 +90,14 @@ export class QuotesPulseProvider {
 			this._requestsPending++;
 
 			const subscriptionRecord = this._subscribers[listenerGuid];
-			this._quotesProvider.getQuotes(updateType === SymbolsType.Fast ? subscriptionRecord.fastSymbols : subscriptionRecord.symbols)
+			if (!subscriptionRecord) {
+				this._requestsPending--;
+				continue;
+			}
+			
+			// this._quotesProvider.getQuotes(updateType === SymbolsType.Fast ? subscriptionRecord.fastSymbols : subscriptionRecord.symbols)
+			this._quotesProvider
+				.getQuotes(updateType === SymbolsType.Fast ? subscriptionRecord.fastSymbols : subscriptionRecord.symbols)
 				.then((data: QuoteData[]) => {
 					this._requestsPending--;
 					if (!this._subscribers.hasOwnProperty(listenerGuid)) {
