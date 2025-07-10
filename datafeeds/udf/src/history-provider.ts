@@ -107,7 +107,7 @@ export class HistoryProvider {
 
 				resolve(result);
 			} catch (e) {
-				const reasonString = getErrorMessage(e);
+				const reasonString = getErrorMessage(e as string | Error | undefined);
 				console.warn(`HistoryProvider: getBars() failed, error=${reasonString}`);
 				reject(reasonString);
 			}
@@ -154,7 +154,7 @@ export class HistoryProvider {
 				}
 			}
 		} catch (e) {
-			const reasonString = getErrorMessage(e);
+			const reasonString = getErrorMessage(e as string | Error | undefined);
 			console.warn(`HistoryProvider: getBars() warning during followup request, error=${reasonString}`);
 		}
 	}
