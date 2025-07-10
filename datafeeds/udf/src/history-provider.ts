@@ -128,12 +128,14 @@ export class HistoryProvider {
 				}
 
 				if (this._limitedServerResponse.expectedOrder === 'earliestFirst') {
-					if (result.bars.length > 0) {
-					    requestParams.from = Math.round(result.bars[result.bars.length - 1].time / 1000);
+					const lastBar = result.bars[result.bars.length - 1];
+					if (lastBar && lastBar.time) {
+					    requestParams.from = Math.round(lastBar.time / 1000);
 					}
 				} else {
-					if (result.bars.length > 0) {
-					    requestParams.to = Math.round(result.bars[0].time / 1000);
+					const firstBar = result.bars[0];
+					if (firstBar && firstBar.time) {
+					    requestParams.to = Math.round(firstBar.time / 1000);
 					}
 				}
 
