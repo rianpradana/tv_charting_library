@@ -148,8 +148,11 @@ export class HistoryProvider {
 				lastResultLength = followupResult.bars.length;
 
 				if (this._limitedServerResponse.expectedOrder === 'earliestFirst') {
-					if (followupResult.bars[0].time === result.bars[result.bars.length - 1].time) {
-						followupResult.bars.shift();
+					const firstFollowupBar = followupResult.bars[0];
+					const lastResultBar = result.bars[result.bars.length - 1];
+					
+					if (firstFollowupBar && lastResultBar && firstFollowupBar.time === lastResultBar.time) {
+					    followupResult.bars.shift();
 					}
 					result.bars.push(...followupResult.bars);
 				} else {
