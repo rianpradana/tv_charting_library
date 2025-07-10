@@ -77,7 +77,7 @@ export class DataPulseProvider implements IDataPulseProvider {
 		// BEWARE: please note we really need 2 bars, not the only last one
 		// see the explanation below. `10` is the `large enough` value to work around holidays
 		if (!subscriptionRecord) {
-		  throw new Error(`subscriptionRecord not found for UID: ${subscriberUID}`);
+		  throw new Error(`subscriptionRecord not found for UID: ${listenerGuid}`);
 		}
 		
 		const rangeStartTime = rangeEndTime - periodLengthSeconds(subscriptionRecord.resolution, 10);
