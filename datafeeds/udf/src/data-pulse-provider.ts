@@ -172,7 +172,12 @@ private _onSubscriberDataReceived(listenerGuid: string, result: GetBarsResult): 
       throw new Error('Not enough bars in history for proper pulse update. Need at least 2.');
     }
 
+    // const previousBar = bars[bars.length - 2];
+    // subscriptionRecord.listener(previousBar);
     const previousBar = bars[bars.length - 2];
+	if (!previousBar) {
+	  throw new Error('Previous bar is undefined. Need at least two bars to update.');
+	}
     subscriptionRecord.listener(previousBar);
   }
 
