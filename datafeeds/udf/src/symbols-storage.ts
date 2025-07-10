@@ -246,7 +246,7 @@ export class SymbolsStorage {
 
 				const symbolInfo: LibrarySymbolInfo = {
 					ticker: ticker,
-					name: symbolName,
+					name: symbolName ?? '',
 					base_name: [listedExchange + ':' + symbolName],
 					listed_exchange: listedExchange,
 					exchange: tradedExchange,
