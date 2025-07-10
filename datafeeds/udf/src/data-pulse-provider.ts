@@ -138,53 +138,53 @@ export class DataPulseProvider implements IDataPulseProvider {
 // 		subscriptionRecord.listener(lastBar);
 // 	}
 // }
-private _onSubscriberDataReceived(listenerGuid: string, result: GetBarsResult): void {
-  // means the subscription was cancelled while waiting for data
-  if (!this._subscribers.hasOwnProperty(listenerGuid)) {
-    logMessage(`DataPulseProvider: Data comes for already unsubscribed subscription #${listenerGuid}`);
-    return;
-  }
-
-  const bars = result.bars;
-  if (bars.length === 0) {
-    return;
-  }
-
-  const lastBar = bars[bars.length - 1];
-  if (!lastBar) {
-    return;
-  }
-
-  const subscriptionRecord = this._subscribers[listenerGuid];
-
-  if (!subscriptionRecord) {
-    return;
-  }
-
-  if (subscriptionRecord.lastBarTime !== null && lastBar.time < subscriptionRecord.lastBarTime) {
-    return;
-  }
-
-  const isNewBar = subscriptionRecord.lastBarTime !== null && lastBar.time > subscriptionRecord.lastBarTime;
-
-  if (isNewBar) {
-    if (bars.length < 2) {
-      throw new Error('Not enough bars in history for proper pulse update. Need at least 2.');
-    }
-
-    // const previousBar = bars[bars.length - 2];
-    // subscriptionRecord.listener(previousBar);
-    const previousBar = bars[bars.length - 2];
-	if (!previousBar) {
-	  throw new Error('Previous bar is undefined. Need at least two bars to update.');
+	private _onSubscriberDataReceived(listenerGuid: string, result: GetBarsResult): void {
+	  // means the subscription was cancelled while waiting for data
+	  if (!this._subscribers.hasOwnProperty(listenerGuid)) {
+	    logMessage(`DataPulseProvider: Data comes for already unsubscribed subscription #${listenerGuid}`);
+	    return;
+	  }
+	
+	  const bars = result.bars;
+	  if (bars.length === 0) {
+	    return;
+	  }
+	
+	  const lastBar = bars[bars.length - 1];
+	  if (!lastBar) {
+	    return;
+	  }
+	
+	  const subscriptionRecord = this._subscribers[listenerGuid];
+	
+	  if (!subscriptionRecord) {
+	    return;
+	  }
+	
+	  if (subscriptionRecord.lastBarTime !== null && lastBar.time < subscriptionRecord.lastBarTime) {
+	    return;
+	  }
+	
+	  const isNewBar = subscriptionRecord.lastBarTime !== null && lastBar.time > subscriptionRecord.lastBarTime;
+	
+	  if (isNewBar) {
+	    if (bars.length < 2) {
+	      throw new Error('Not enough bars in history for proper pulse update. Need at least 2.');
+	    }
+	
+	    // const previousBar = bars[bars.length - 2];
+	    // subscriptionRecord.listener(previousBar);
+	    const previousBar = bars[bars.length - 2];
+		if (!previousBar) {
+		  throw new Error('Previous bar is undefined. Need at least two bars to update.');
+		}
+	    subscriptionRecord.listener(previousBar);
+	  }
+	
+	  subscriptionRecord.lastBarTime = lastBar.time;
+	  subscriptionRecord.listener(lastBar);
 	}
-    subscriptionRecord.listener(previousBar);
-  }
-
-  subscriptionRecord.lastBarTime = lastBar.time;
-  subscriptionRecord.listener(lastBar);
 }
-
 function periodLengthSeconds(resolution: string, requiredPeriodsCount: number): number {
 	let daysCount = 0;
 
