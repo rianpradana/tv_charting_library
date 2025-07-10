@@ -289,8 +289,8 @@ export class SymbolsStorage {
 					this._symbolsInfo[symbolKey(symbolNameSafe, currencyCode, unitId)] = symbolInfo;
 					this._symbolsInfo[symbolKey(fullNameSafe, currencyCode, unitId)] = symbolInfo;
 				}
-				if (symbolNameSafe !== undefined) {
-					this._symbolsList.push(symbolNameSafe);
+				if (symbolName !== undefined) {
+					this._symbolsList.push(symbolName);
 				}
 				// this._symbolsList.push(symbolName);
 			}
