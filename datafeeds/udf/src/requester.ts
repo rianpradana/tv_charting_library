@@ -20,7 +20,8 @@ export class Requester implements IRequester {
 			}
 
 			urlPath += paramKeys.map((key: string) => {
-				return `${encodeURIComponent(key)}=${encodeURIComponent(params[key].toString())}`;
+				const value = params[key];
+				return `${encodeURIComponent(key)}=${encodeURIComponent(value !== undefined ? value.toString() : '')}`;
 			}).join('&');
 		}
 
