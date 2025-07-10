@@ -275,8 +275,9 @@ export class SymbolsStorage {
 					volume_precision: definedValueOrDefault(extractField(data, 'volume-precision', symbolIndex), 0),
 					format: 'price',
 				};
-
-				this._symbolsInfo[ticker] = symbolInfo;
+				const tickerSafe = ticker ?? '';
+				this._symbolsInfo[tickerSafe] = symbolInfo;
+				// this._symbolsInfo[ticker] = symbolInfo;
 				this._symbolsInfo[symbolName] = symbolInfo;
 				this._symbolsInfo[fullName] = symbolInfo;
 				if (currencyCode !== undefined || unitId !== undefined) {
