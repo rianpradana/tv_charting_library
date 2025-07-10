@@ -110,10 +110,17 @@ export class DataPulseProvider implements IDataPulseProvider {
 		const lastBar = bars[bars.length - 1];
 		const subscriptionRecord = this._subscribers[listenerGuid];
 
-		if (subscriptionRecord.lastBarTime !== null && lastBar.time < subscriptionRecord.lastBarTime) {
-			return;
+		// if (subscriptionRecord.lastBarTime !== null && lastBar.time < subscriptionRecord.lastBarTime) {
+		// 	return;
+		// }
+		if (!subscriptionRecord) {
+		  logMessage(`DataPulseProvider: Data comes for already unsubscribed subscription #${listenerGuid}`);
+		  return;
 		}
-
+		
+		if (subscriptionRecord.lastBarTime !== null && lastBar.time < subscriptionRecord.lastBarTime) {
+		  return;
+		}
 		const isNewBar = subscriptionRecord.lastBarTime !== null && lastBar.time > subscriptionRecord.lastBarTime;
 
 		// Pulse updating may miss some trades data (ie, if pulse period = 10 secods and new bar is started 5 seconds later after the last update, the
