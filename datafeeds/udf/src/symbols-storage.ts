@@ -277,9 +277,13 @@ export class SymbolsStorage {
 				};
 				const tickerSafe = ticker ?? '';
 				this._symbolsInfo[tickerSafe] = symbolInfo;
+				const symbolNameSafe = symbolName ?? '';
+				this._symbolsInfo[symbolNameSafe] = symbolInfo;
+				const fullNameSafe = fullName ?? '';
+				this._symbolsInfo[fullNameSafe] = symbolInfo;
 				// this._symbolsInfo[ticker] = symbolInfo;
-				this._symbolsInfo[symbolName] = symbolInfo;
-				this._symbolsInfo[fullName] = symbolInfo;
+				// this._symbolsInfo[symbolName] = symbolInfo;
+				// this._symbolsInfo[fullName] = symbolInfo;
 				if (currencyCode !== undefined || unitId !== undefined) {
 					this._symbolsInfo[symbolKey(ticker, currencyCode, unitId)] = symbolInfo;
 					this._symbolsInfo[symbolKey(symbolName, currencyCode, unitId)] = symbolInfo;
